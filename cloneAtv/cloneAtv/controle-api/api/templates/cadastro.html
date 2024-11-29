@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='cadastro.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='logo2.png') }}" type="image/jpeg">
+    <script src="{{ url_for('static', filename='cadastro.js') }}" defer></script>
+    <title>Cadastro</title>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="pag">
+        <img src="{{ url_for('static', filename='logo.jpeg') }}" alt="Logo do SmartFinance" class="logo">
+        
+        <h1>SmartFinance</h1> 
+        <p>Cadastre-se grátis</p>
+        
+        <!-- Exibir mensagens de flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <form id="formCadastro" class="formLogin" method="POST" action="{{ url_for('cadastro') }}">
+            <label for="nome">Nome: </label>
+            <input type="text" id="nome" name="nome" placeholder="Digite seu nome" required>
+
+            <label for="email">E-mail: </label>
+            <input type="email" id="email" name="email" placeholder="Digite seu E-mail" required>
+
+            <label for="cpf">CPF: </label>
+            <input type="number" id="cpf" name="cpf" placeholder="Digite seu CPF" pattern="\d{3}\.d{3}\.d{3}\.d{2}" required>
+
+            <label for="datanasc">Data de Nascimento: </label>
+            <input type="date" id="datanasc" name="datanasc" required>
+
+            <label for="sexo">Sexo: </label>
+            <input type="text" id="sexo" name="sexo" placeholder="Qual o seu gênero" required>
+
+            <label for="senha">Senha: </label>
+            <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+
+            <p>Já tem cadastro? <a href="{{ url_for('login') }}">faça o login aqui</a></p>
+
+            <button type="submit">Cadastrar</button>
+        </form>
+    </div>
+</body>
+</html>

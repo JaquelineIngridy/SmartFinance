@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='logo2.png') }}" type="image/jpeg">
+    <script src="{{ url_for('static', filename='login.js') }}" defer></script>
+    <title>Login</title>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="pag">
+        <img src="{{ url_for('static', filename='logo.jpeg') }}" alt="Logo do SmartFinance" class="logo">
+        
+        <h1>Bem-vindo ao SmartFinance</h1> 
+        <p>Gerencie suas finanças de forma fácil e eficiente.</p>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <form action="/acessoLogin" method="POST">
+            
+            <label for="email">E-mail: </label>
+            <input type="email" id="email" name="email" placeholder="Digite seu E-mail" required>
+            
+            <label for="senha">Senha: </label>
+            <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+            
+            <div class="check">
+                <input type="checkbox" id="esquecisenha" name="esquecisenha">
+                <label for="esquecisenha">Esqueci a senha</label>
+            </div>
+            
+            <p>Não tem cadastro? <a href="{{ url_for('cadastro') }}">faça o cadastro aqui</a></p>
+
+            <button type="submit">Entrar</button>
+        </form>
+    </div>
+</body>
+</html>

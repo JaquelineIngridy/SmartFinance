@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='logout.css') }}">
+    <link rel="shortcut icon" href="icone-cursos-gestao-financeira-915.png" type="">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <title>Logout</title>
+</head>
+<body>
+    <nav class="menu_lateral">
+        <div class="btn-expandir">
+            <i class="bi bi-list" id="btn-exp"></i>
+        </div>
+        <ul>
+            <li class="item-menu">
+                <a href="{{ url_for('tela_principal') }}">
+                    <span class="icon"><i class="bi bi-house"></i></span>
+                    <span class="txt-link">Home</span>
+                </a>
+            </li>
+            <li class="item-menu">
+                <a href="{{ url_for('transacoes') }}">
+                    <span class="icon"><i class="bi bi-globe"></i></span>
+                    <span class="txt-link">Transações</span>
+                </a>
+            </li>
+            <li class="item-menu">
+                <a href="{{ url_for('metas') }}">
+                    <span class="icon"><i class="bi bi-cash-coin"></i></span>
+                    <span class="txt-link">Metas</span>
+                </a>
+            </li>
+            <li class="item-menu">
+                <a href="{{ url_for('relatorio') }}">
+                    <span class="icon"><i class="bi bi-receipt-cutoff"></i></span>
+                    <span class="txt-link">Relatórios</span>
+                </a>
+            </li>
+            <li class="item-menu ativo">
+                <a href="{{ url_for('logout') }}">
+                    <span class="icon"><i class="bi bi-box-arrow-right"></i></span>
+                    <span class="txt-link">Sair</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <button id="logoutButton">Logout</button>
+</body>
+<script src="{{ url_for('static', filename='logout.js') }}" defer></script>
+</html>

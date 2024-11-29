@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='tela_principal.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='logo2.png') }}" type="image/jpeg">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+    <title>Tela Principal</title>
+
+    </body>
+
+</html>
+
+<body>
+    <header class="top-barra">
+        <div class="usuario">
+            <i class="bi bi-person"></i>
+        </div>
+        <div class="barra-pesq">
+            <input type="text" placeholder="Buscar...">
+            <button><i class="bi bi-search"></i></button>
+        </div>
+        <div class="icons">
+            <i class="bi bi-bell"></i>
+            <i class="bi bi-three-dots"></i>
+        </div>
+    </header>
+    <nav class="menu_lateral">
+        <div class="btn-expandir">
+            <i class="bi bi-list" id="btn-exp"></i>
+        </div>
+        <ul>
+            <li class="item-menu ativo">
+                <a href="{{ url_for('tela_principal') }}">
+                    <span class="icon"><i class="bi bi-house"></i></span>
+                    <span class="txt-link">Home</span>
+                </a>
+            </li>
+            <li class="item-menu">
+                <a href="{{ url_for('transacoes') }}">
+                    <span class="icon"><i class="bi bi-globe"></i></span>
+                    <span class="txt-link">Transações</span>
+                </a>
+            </li>
+            <li class="item-menu">
+                <a href="{{ url_for('metas') }}">
+                    <span class="icon"><i class="bi bi-cash-coin"></i></span>
+                    <span class="txt-link">Metas</span>
+                </a>
+            </li>
+            <li class="item-menu">
+                <a href="{{ url_for('relatorio') }}">
+                    <span class="icon"><i class="bi bi-receipt-cutoff"></i></span>
+                    <span class="txt-link">Relatórios</span>
+                </a>
+            </li>
+            <li class="item-menu">
+                <a href="{{ url_for('logout') }}">
+                    <span class="icon"><i class="bi bi-box-arrow-right"></i></span>
+                    <span class="txt-link">Sair</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <main>
+        <section>
+            <h1 id="saudacao">Bem-Vindo(a), {{ usuario.nome }}! {{ saudacao }}</h1>
+            <div class="cabeca">
+                <ul>
+                    <li>
+                        <h2 class="Saldo">Saldo Total</h2>
+                        <p class="saldo" id="Saldo" data-tipo="saldo">R$ {{ saldo_total | round(2) }}</p>
+                    </li>
+                    <li>
+                        <h2 class="Receita">Receita Total</h2>
+                        <p class="saldo" id="Receita" data-tipo="receita">R$ {{  receita_total | round(2) }}</p>
+                    </li>
+                    <li>
+                        <h2 class="Despesa">Despesa Total</h2>
+                        <p class="saldo" id="Despesa" data-tipo="despesa">R$ {{ despesa_total | round(2) }}</p>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="cont">
+                <div class="box">
+                    <div class="container">
+                        <div class="box transacoes" id="transacao">
+                            <h2>Minhas Contas</h2>
+                            <ul>
+                                {% for conta in contas %}
+                                <li id="account-{{ conta.id }}">
+                                    {{ conta.nome_banco }} {{ conta.tipo_conta }} R$ {{ conta.saldo_atual | round(2) }}
+                                    <!-- <button class="remove-account" onclick="removeAccount({{ conta.id }})">X</button> -->
+                                </li>
+                                {% endfor %}
+                                <button class="add-account" onclick="openPopup()">+</button>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="box transacoes" id="transacao">
+                        <h2>Minhas Transações</h2>
+                        <ul> 
+                            {% for transacao in transacoes %} 
+                                <li>{{ transacao.data.strftime('%d/%m/%Y') }} - {{ transacao.descricao }} - R$ {{ transacao.valor | round(2) }} - Categoria: {{ transacao.categoria }}</li> 
+                            {% endfor %} 
+                        </ul>
+                    </div>
+                </div>
+                </div>
+                </div>                
+            </div>
+        </section>
+    </main>
+    <!-- Pop-up -->
+    <div id="telaPopup" class="popup" style="display:none;">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup()">&times;</span>
+            <h2>Adicionar Conta</h2>
+            <form action="{{ url_for('adicionar_conta') }}" method="POST"> <!-- ID correto -->
+                <label for="nome_banco">Nome do Banco:</label>
+                <input type="text" id="nome_banco" name="nome_banco" required>
+                <label for="balanco">Saldo:</label>
+                <input type="number" id="balanco" name="saldo_atual" required>
+                <label for="accountType">Tipo de Conta:</label>
+                <input type="radio" id="corrente" name="tipo_conta" value="Conta Corrente" required>
+                <label for="corrente">Conta Corrente</label>
+
+                <input type="radio" id="poupanca" name="tipo_conta" value="Conta Poupança" required>
+                <label for="poupanca">Conta Poupança</label>
+
+                <button type="submit">Adicionar</button>
+            </form>
+
+        </div>
+    </div>
+    
+        <canvas id="transacoesPieChart" width="400" height="400"></canvas> 
+        <script src="{{ url_for('static', filename='tela_principal.js') }}"></script> 
+    
+    </body>
+
+</html>

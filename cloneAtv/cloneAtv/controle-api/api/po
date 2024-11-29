@@ -1,0 +1,288 @@
+</head><!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='tela_principal.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='logo2.png') }}" type="image/jpeg">
+    <title>Tela Principal</title>
+</head>
+<body>
+    <header class="top-barra">
+        <div class="usuario">
+            <i class="bi bi-person"></i>
+        </div>
+        <div class="barra-pesq">
+            <input type="text" placeholder="Buscar...">
+            <button><i class="bi bi-search"></i></button>
+        </div>
+        <div class="icons">
+            <i class="bi bi-bell"></i>
+            <i class="bi bi-three-dots"></i>
+        </div>
+    </header>
+    <nav class="menu_lateral">
+        <div class="btn-expandir">
+            <i class="bi bi-list" id="btn-exp"></i>
+        </div>
+        <ul>
+            <li class="item-menu ativo">
+                <a href="{{ url_for('tela_principal') }}">
+                    <span class="icon"><i class="bi bi-house"></i></span>
+                    <span class="txt-link">Home</span>
+                </a>
+            </li>
+            <li class="item-menu">
+                <a href="{{ url_for('transacoes') }}">
+                    <span class="icon"><i class="bi bi-globe"></i></span>
+                    <span class="txt-link">Transações</span>
+                </a>
+            </li>
+            <li class="item-menu">
+                <a href="{{ url_for('metas') }}">
+                    <span class="icon"><i class="bi bi-cash-coin"></i></span>
+                    <span class="txt-link">Metas</span>
+                </a>
+            </li>
+            <li class="item-menu">
+                <a href="{{ url_for('relatorio') }}">
+                    <span class="icon"><i class="bi bi-receipt-cutoff"></i></span>
+                    <span class="txt-link">Relatórios</span>
+                </a>
+            </li>
+            <li class="item-menu">
+                <a href="{{ url_for('logout') }}">
+                    <span class="icon"><i class="bi bi-box-arrow-right"></i></span>
+                    <span class="txt-link">Sair</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <main>
+        <section>
+            <h1 id="saudacao">Bem-Vindo(a), {{ nome_usuario }}! {{ saudacao }}</h1>
+            <div class="cabeca">
+                <ul>
+                    <li>
+                        <h2 class="Saldo">Saldo Total</h2>
+                        <p class="saldo" id="Saldo">R$: 0,00</p>
+                    </li>
+                    <li>
+                        <h2 class="Receita">Receita Total</h2>
+                        <p class="saldo" id="Receita">R$: 0,00</p>
+                    </li>
+                    <li>
+                        <h2 class="Despesa">Despesa Total</h2>
+                        <p class="saldo" id="Despesa">R$: 0,00</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="cont">
+                <div class="box">
+                    <h2>Minhas Contas</h2>
+                    <button class="add-account" onclick="openPopup()">+</button>
+                    <ul class="gastos-mensais" id="Lista"></ul>
+                </div>
+                <div class="box gastos-mensais">
+                    <h2>Gastos Mensais</h2>
+                    <ul></ul>
+                </div>
+            </div>
+        </section>
+    </main>
+    <div id="telaPopup" class="popup" style="display:none;">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup()">&times;</span>
+            <h2>Adicionar Conta</h2>
+            <form id="telaForm" action="/adicionar_conta" method="POST">
+                <input type="hidden" name="usuario_id" value="{{ usuario.id }}">
+                <label for="bankName">Nome do Banco:</label>
+                <input type="text" id="bancoName" name="bancoName" required>
+                <label for="balance">Saldo:</label>
+                <input type="number" id="balanco" name="balanco" required>
+                <label for="accountType">Tipo de Conta:</label>
+                <div class="corrente">
+                    <input type="radio" id="corrente" name="accountType" value="Conta Corrente" required>
+                    <label for="corrente">Conta Corrente</label>
+                </div>
+                <div class="poupanca">
+                    <input type="radio" id="poupanca" name="accountType" value="Conta Poupança" required>
+                    <label for="poupanca">Conta Poupança</label>
+                </div>
+                <button type="submit">Adicionar</button>
+            </form>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='tela_principal.js') }}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Finanças</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- <div id="receitasElement"></div>
+    <div id="despesasElement"></div>
+    <div id="saldoTotalElement"></div> -->
+
+    <h1 style="color: rgb(0, 0, 0); font-size: 24px; text-align: center;">Gráfico de Transações</h1>
+    <canvas id="financeChart" width="400" height="400"></canvas>
+
+    <script>
+        // Função para formatar os valores como moeda
+        function formatCurrency(value) {
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        // Exemplo de dados de transações e contas (estes valores podem vir de outra tela ou API)
+        const transactions = [
+            { type: 'Receita', amount: 1000 },
+            { type: 'Despesa', amount: 500 },
+            { type: 'Receita', amount: 300 }
+        ];
+
+        const accounts = [
+            { balance: 1500 },
+            { balance: 500 }
+        ];
+
+        // Elementos da tela
+        const receitasElement = document.getElementById('receitasElement');
+        const despesasElement = document.getElementById('despesasElement');
+        const saldoTotalElement = document.getElementById('saldoTotalElement');
+
+        // Configuração do gráfico Chart.js (usando o gráfico de pizza)
+        const ctx = document.getElementById('financeChart').getContext('2d');
+        const financeChart = new Chart(ctx, {
+            type: 'pie', //gráfico de pizza
+            data: {
+                labels: ['Receitas', 'Despesas', 'Saldo Total'], // Labels para as fatias do gráfico
+                datasets: [{
+                    label: 'Distribuição Financeira',
+                    data: [0, 0, 0], // Dados iniciais para as fatias
+                    backgroundColor: ['#28a745', '#dc3545', '#007bff'], // Cores para cada fatia
+                    borderColor: ['#218838', '#c82333', '#0056b3'], // Cor da borda das fatias
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top', // Posição da legenda
+                    }
+                }
+            }
+        });
+
+        // Função para atualizar os totais e o gráfico de pizza
+        function updateTotals() {
+    // Calcular a receita das transações (considerando transações do tipo 'Receita')
+    const receitas = transactions.filter(t => t.type === 'Receita')
+                            .reduce((total, t) => total + parseFloat(t.amount), 0);
+
+    // Calcular as despesas (considerando transações do tipo 'Despesa')
+    const despesas = transactions.filter(t => t.type === 'Despesa')
+                            .reduce((total, t) => total + parseFloat(t.amount), 0);
+
+    // Calcular o saldo das contas
+    const saldoContas = accounts.reduce((total, account) => total + parseFloat(account.balance), 0);
+
+    // Calcular o saldo total (considerando receita total e despesas)
+    const saldoTotal = saldoContas + receitas - despesas;
+
+    // Atualizar os valores na tela
+    receitasElement.textContent = `Receita Total: ${formatCurrency(receitas)}`;
+    despesasElement.textContent = `Despesas: ${formatCurrency(despesas)}`;
+    saldoTotalElement.textContent = `Saldo Total: ${formatCurrency(saldoTotal)}`;
+
+    // Atualizar o gráfico com os novos dados
+    updateChartData(receitas, despesas, saldoTotal);
+}
+
+// Função para atualizar os dados do gráfico
+function updateChartData(receitas, despesas, saldoTotal) {
+    financeChart.data.datasets[0].data = [receitas, despesas, saldoTotal];
+    financeChart.update(); // Atualiza o gráfico para refletir as mudanças
+}
+    </script>
+
+</body>
+</html>
+
+==================================================================================
+
+
+
+import pyodbc
+from flask import jsonify, request
+from flask_login import login_required, current_user
+
+# Configuração da conexão com o SQL Server
+def get_db_connection():
+    conn = pyodbc.connect(
+        'DRIVER={ODBC Driver 17 for SQL Server};'
+        'SERVER=seu_servidor;'
+        'DATABASE=sua_base_de_dados;'
+        'UID=seu_usuario;'
+        'PWD=sua_senha;'
+    )
+    return conn
+
+@app.route('/transacoes', methods=['GET', 'POST'])
+@login_required
+def transacoes():
+    usuario_id = current_user.id  # ID do usuário logado
+
+    if request.method == 'POST':
+        # Recebe dados da transação do cliente
+        transacao = request.json
+        descricao = transacao.get('descricao')
+        valor = transacao.get('valor')
+        data_transacao = transacao.get('data_transacao')
+        tipo = transacao.get('tipo')
+        modo_pagamento = transacao.get('modo_pagamento')
+        notas = transacao.get('notas')
+
+        # Insere a nova transação no banco de dados
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            INSERT INTO Transacoes (usuario_id, descricao, valor, data_transacao, tipo, modo_pagamento, notas)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (usuario_id, descricao, valor, data_transacao, tipo, modo_pagamento, notas)
+        )
+        conn.commit()
+        conn.close()
+
+        return jsonify({'success': True}), 201
+
+    # Método GET retorna todas as transações do usuário logado
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT id, descricao, valor, data_transacao, tipo, modo_pagamento, notas FROM Transacoes WHERE usuario_id = ?",
+        (usuario_id,)
+    )
+    transacoes_lista = [
+        dict(
+            id=row[0],
+            descricao=row[1],
+            valor=row[2],
+            data_transacao=row[3],
+            tipo=row[4],
+            modo_pagamento=row[5],
+            notas=row[6],
+        )
+        for row in cursor.fetchall()
+    ]
+    conn.close()
+
+    return jsonify(transacoes_lista)
